@@ -13,4 +13,4 @@ This could be combined with a job scheduler such as crontab to automatically sen
 
 
 ## Sample email output
-![image](https://raw.githubusercontent.com/AMWen/Stocks/main/images/example.png | width=50%)
+<img src="https://raw.githubusercontent.com/AMWen/Stocks/main/images/example.png" width="75%">
