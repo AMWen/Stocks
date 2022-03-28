@@ -38,7 +38,7 @@ headers = {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,imag
 
 # Function to get data for specific stock ticker
 def parse(args):
-    ticker, qty, bought, sell_prc = args
+    ticker, qty, bought, sell_pct, sell_prc = args
     
     # Random wait time between requests
     random_no = (random.random()-0.5)
@@ -60,7 +60,8 @@ def parse(args):
         summary_data.update({'Name': name,
                             'Purchase Price': bought,
                             'Quantity': qty,
-                            'Desired Sell Price': sell_prc})
+                            'Sell Pct': sell_pct,
+                            'Sell/Buy Price': sell_prc})
                             
         # Add information from summary table
         for table_data in summary_table:
@@ -95,7 +96,7 @@ def parse(args):
 
 # Function to sort df according to specified columns and move some columns to the front
 def rearrange_df(df, columns, order=['% Change Cost Basis', '% Change Previous Close'], ascending=[False, True],
-                 first_cols=['Name', 'Quantity', 'Purchase Price', 'Desired Sell Price', 'Current Price',
+                 first_cols=['Name', 'Quantity', 'Purchase Price', 'Sell Pct', 'Sell/Buy Price', 'Current Price',
                              'Earnings', '% Change Cost Basis', '% Change Previous Close']):
     df = df.sort_values(order, ascending=ascending)
     other_cols = [col for col in columns if col not in first_cols]

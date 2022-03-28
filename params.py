@@ -30,7 +30,9 @@ additional = [stock for stock in set(additional) if stock not in owned_tickers +
 # Combine the 3 types
 stocks = pd.concat([stocks,
         pd.DataFrame(buy_list, columns=['Symbol', 'Cost Basis Per Share', 'Sell Pct']),
-        pd.DataFrame(additional, columns=['Symbol'])], ignore_index=True).fillna(0)
+        pd.DataFrame(additional, columns=['Symbol'])], ignore_index=True, sort=False).fillna(0)
+
+print(stocks.head())
 
 stocks['Sell/Buy Price'] = (1 + stocks['Sell Pct']/100) * stocks['Cost Basis Per Share']
-stocks.loc[stocks.eval('`Sell Pct` == 0'), 'Sell/Buy Price'] = 10000
+stocks.loc[stocks['Sell Pct'] == 0, 'Sell/Buy Price'] = 10000
