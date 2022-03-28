@@ -9,7 +9,7 @@ You will also need to update `Portfolio_Positions.csv` with information for stoc
 
 This could be combined with a job scheduler such as crontab to automatically send daily digests and alerts for when trigger prices are reached.
 
-**Example:** `45 9-15 * * 1-5 (cd /path/to/Stocks/folder/ && /anaconda3/bin/python stocks.py > /tmp/test.log)` to run the `stocks.py` code every hour between 9:45 am and 3:45 pm.
+**Example:** `45 9-15 * * 1-5 (cd /path/to/Stocks/folder/ && /anaconda3/bin/python stocks.py > /tmp/test.log)` to run the `stocks.py` code every hour between 9:45 am and 3:45 pm on weekdays.
 
 
 ## Sample email output
