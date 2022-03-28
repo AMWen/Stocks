@@ -1,11 +1,17 @@
-# Stock categories
+# File with info about owned stocks
+filename: 'Portfolio_Positions.csv'
+
+# Stock categories for email 
+buy_list: [['TSLA', 1200, -15],
+           ['PLL', 75, -10]]  # stocks to buy, with target sell price, and desired % profit (e.g. buy PLL when ~$68)
+additional: ['INTC']  # stocks to track so can categorize later
+
+# Stock categories for Streamlit app
 long_term: ['SLB']  # stocks to keep long-term
 short_term: ['PLTR']  # stocks to keep short-term (buy when there's a dip)
 buy_asap: ['BAC']  # stocks to buy immediately when there is a dip
 sell_asap: ['ZM']  # stocks to seel immediately when there is a bump
-buy_list: [['TSLA', 1200, 15],
-           ['PLL', 75, 10]]  # stocks to buy, with target sell price, and desired % profit (e.g. buy PLL when ~$68)
-additional: ['INTC']  # stocks to track so can categorize later
 
-# File with info about owned stocks
-filename: 'Portfolio_Positions.csv'
+# Additional params 
+update: False  # whether or not to send email update outside of beginning and end of day
+threads: 5  # number of threads for webscraping
