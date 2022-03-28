@@ -32,7 +32,5 @@ stocks = pd.concat([stocks,
         pd.DataFrame(buy_list, columns=['Symbol', 'Cost Basis Per Share', 'Sell Pct']),
         pd.DataFrame(additional, columns=['Symbol'])], ignore_index=True, sort=False).fillna(0)
 
-print(stocks.head())
-
 stocks['Sell/Buy Price'] = (1 + stocks['Sell Pct']/100) * stocks['Cost Basis Per Share']
 stocks.loc[stocks['Sell Pct'] == 0, 'Sell/Buy Price'] = 10000
