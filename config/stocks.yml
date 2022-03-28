@@ -1,5 +1,5 @@
 # File with info about owned stocks
-filename: 'Portfolio_Positions.csv'
+filename: 'config/Portfolio_Positions.csv'
 
 # Stock categories for email 
 buy_list: [['TSLA', 1200, -15],
@@ -15,3 +15,17 @@ sell_asap: ['ZM']  # stocks to seel immediately when there is a bump
 # Additional params 
 update: False  # whether or not to send email update outside of beginning and end of day
 threads: 5  # number of threads for webscraping
+margin: -4  # % change for which to send automatic alerts
+
+# 1) price dips below X% (margin) of previous close
+# 2) price dips below X% (margin) of price at which stock was bought
+
+# Email info (obtain from google API)
+GOOGLE_ACCOUNTS_BASE_URL: 'https://accounts.google.com'
+GOOGLE_CLIENT_ID: ''  # Gmail variables and tokens
+GOOGLE_CLIENT_SECRET: ''
+GOOGLE_REFRESH_TOKEN: ''
+    
+# Emails
+username: ''
+toaddr: ''

@@ -11,8 +11,6 @@ import pandas as pd
 import random
 import time
 
-from datetime import datetime, timedelta
-
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -20,6 +18,10 @@ from email.mime.text import MIMEText
 from urllib.request import urlopen
 from urllib.parse import urlencode
 import base64
+
+from params import GOOGLE_ACCOUNTS_BASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, \
+    username, toaddr
+
 
 # Headers needed for requests
 headers = {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -36,35 +38,24 @@ headers = {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,imag
 
 
 # Function to get data for specific stock ticker
-@st.cache
 def parse(args):
-    ticker = args[0]
-    bought = args[1]
-    qty = args[2]
-    sell_prc = args[3]
+    ticker, qty, bought, sell_prc = args
     
     # Random wait time between requests
     random_no = (random.random()-0.5)
     time.sleep(0.55+random_no)
     
     try:
-        # Get company name
-        url = "http://finance.yahoo.com/quote/%s/profile" % ticker
+        # Get company name and summary table from site
+        url = f"http://finance.yahoo.com/quote/{ticker}"
         response = requests.get(url, headers=headers, timeout=30)
         parser = html.fromstring(response.text)
-        name = parser.xpath('//h3[contains(@data-reactid,"6")]//text()')[0]
-        
-        # Get summary table from site
-        url = "http://finance.yahoo.com/quote/%s" % ticker
-        response = requests.get(url, headers=headers, timeout=30)
-        parser = html.fromstring(response.text)
-        summary_table = parser.xpath('//div[contains(@data-test,"summary-table")]//tr')
-        
-        # Get additional details (current price, 1y target estimate, EPS, and earnings date)
-        other_details_json_link = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/{}".format(ticker) + \
-            "?modules=summaryProfile%2CfinancialData%2CrecommendationTrend%2CupgradeDowngradeHistory%2Cearnings%2CdefaultKeyStatistics%2CcalendarEvents"
-        summary_json_response = requests.get(other_details_json_link)
 
+        # Title looks like 'Bank of America Corporation (BAC) Stock Price, News, Quote & History - Yahoo Finance'
+        name = parser.xpath('//title[1]/text()')[0].split(' (')[:-1]  # find <title> and get name portion of it before the ticker
+        name = ' ('.join(name)  # rejoin for any parentheses in actual name
+        summary_table = parser.xpath('//div[contains(@data-test,"summary-table")]//tr')  # find <div> where data-test contains "summary-table"
+ 
         # Add information about purchase price and quantity
         summary_data = OrderedDict()
         summary_data.update({'Name': name,
@@ -80,24 +71,19 @@ def parse(args):
             table_value = ''.join(raw_table_value).strip()
             summary_data.update({table_key: table_value})
         
+        # Get additional details (current price, 1y target estimate, EPS, and earnings date)
+        other_details_json_link = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{ticker}?modules=summaryProfile%2CfinancialData"  # can play around with the various modules
+        summary_json_response = requests.get(other_details_json_link, headers=headers, timeout=30)
+
         # Add additional details from JSON link
-        json_loaded_summary = json.loads(summary_json_response.text)
-        summary = json_loaded_summary["quoteSummary"]["result"][0]
-        cur_price = summary["financialData"]["currentPrice"]['raw']
-        y_Target_Est = summary["financialData"]["targetMeanPrice"]['raw']
         try:
-            eps = summary["defaultKeyStatistics"]["trailingEps"]['raw']
+            json_loaded_summary = json.loads(summary_json_response.text)
+            cur_price = json_loaded_summary["quoteSummary"]["result"][0]["financialData"]["currentPrice"]['raw']
         except:
-            eps = None
+            print("Error with loading additional details")
+            cur_price = summary_data['Bid'].split(' x ')[0]
         
-        earnings_list = summary["calendarEvents"]['earnings']
-        datelist = []
-        for i in earnings_list['earningsDate']:
-            datelist.append(i['fmt'])
-        earnings_date = ' to '.join(datelist)
-            
-        summary_data.update({'Current Price': cur_price, '1y Target Est': y_Target_Est,
-                        'EPS (TTM)': eps, 'Earnings Date': earnings_date})
+        summary_data.update({'Current Price': cur_price})
                             
         return summary_data
 
@@ -109,7 +95,6 @@ def parse(args):
 
 
 # Function to sort df according to specified columns and move some columns to the front
-@st.cache
 def rearrange_df(df, columns, order=['% Change Cost Basis', '% Change Previous Close'], ascending=[False, True],
                  first_cols=['Name', 'Quantity', 'Purchase Price', 'Desired Sell Price', 'Current Price',
                              'Earnings', '% Change Cost Basis', '% Change Previous Close']):
@@ -121,7 +106,6 @@ def rearrange_df(df, columns, order=['% Change Cost Basis', '% Change Previous C
 
 
 # Function to organize the df
-@st.cache
 def organize_df(scraped_data, columns, index):
     df = pd.DataFrame(scraped_data,
                       columns=columns,
@@ -163,16 +147,6 @@ def style_df(df, subset=['% Change Cost Basis', '% Change Previous Close'], bar=
 
 # Function to send email containing df of interest and subject (whether daily update or a price alert)
 def send_email(subject, df):
-    # Gmail variables and tokens
-    GOOGLE_ACCOUNTS_BASE_URL = 'https://accounts.google.com'
-    GOOGLE_CLIENT_ID = '' # need to enter these
-    GOOGLE_CLIENT_SECRET = ''
-    GOOGLE_REFRESH_TOKEN = ''
-    
-    # Emails
-    username = ''
-    toaddr = ''
-    
     # Get access token
     params = {}
     params['client_id'] = GOOGLE_CLIENT_ID
