@@ -19,8 +19,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 import base64
 
-from params import GOOGLE_ACCOUNTS_BASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, \
-    username, toaddr
+from params import access_token_params, username, toaddr
 
 
 # Headers needed for requests
@@ -148,23 +147,18 @@ def style_df(df, subset=['% Change Cost Basis', '% Change Previous Close'], bar=
 # Function to send email containing df of interest and subject (whether daily update or a price alert)
 def send_email(subject, df):
     # Get access token
-    params = {}
-    params['client_id'] = GOOGLE_CLIENT_ID
-    params['client_secret'] = GOOGLE_CLIENT_SECRET
-    params['refresh_token'] = GOOGLE_REFRESH_TOKEN
-    params['grant_type'] = 'refresh_token'
-    request_url = '%s/%s' % (GOOGLE_ACCOUNTS_BASE_URL, 'o/oauth2/token')
-    response = urlopen(request_url, urlencode(params).encode('UTF-8')).read().decode('UTF-8')
+    request_url = f"{access_token_params['base_url']}/o/oauth2/token"
+    response = urlopen(request_url, urlencode(access_token_params).encode('UTF-8')).read().decode('UTF-8')
     response = json.loads(response)
     access_token = response['access_token']
     
     # Get authorization string
-    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (username, access_token)
+    auth_string = f'user={username}\1auth=Bearer {access_token}\1\1'
     auth_string = base64.b64encode(auth_string.encode('ascii')).decode('ascii')
     
     # Set up the SMTP server
     s = SMTP(host='smtp.gmail.com', port=587)
-    s.ehlo(GOOGLE_CLIENT_ID)
+    s.ehlo(access_token_params['client_id'])
     s.starttls()
     s.docmd('AUTH', 'XOAUTH2 ' + auth_string)
     

@@ -21,10 +21,12 @@ margin: -4  # % change for which to send automatic alerts
 # 2) price dips below X% (margin) of price at which stock was bought
 
 # Email info (obtain from google API)
-GOOGLE_ACCOUNTS_BASE_URL: 'https://accounts.google.com'
-GOOGLE_CLIENT_ID: ''  # Gmail variables and tokens
-GOOGLE_CLIENT_SECRET: ''
-GOOGLE_REFRESH_TOKEN: ''
+access_token_params: {
+  'base_url': 'https://accounts.google.com',  # Gmail variables and tokens
+  'client_id': '',  # GOOGLE_CLIENT_ID
+  'client_secret': '',  # GOOGLE_CLIENT_SECRET
+  'refresh_token': '',  # GOOGLE_REFRESH_TOKEN
+  'grant_type': 'refresh_token'}
     
 # Emails
 username: ''
