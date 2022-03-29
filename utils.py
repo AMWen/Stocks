@@ -6,6 +6,7 @@ import streamlit as st
 from lxml import html, etree
 import requests
 import json
+from multiprocessing.pool import ThreadPool
 from collections import OrderedDict
 import pandas as pd
 import random
@@ -125,6 +126,19 @@ def organize_df(scraped_data, columns, index):
 
     # Order by stocks doing the best to the worst and rearrange the columns
     df = rearrange_df(df, columns)
+
+    return df
+
+
+# Function to parse the data from Yahoo then organize into a df
+def scrape_data(df, threads):
+    cols = ['Symbol', 'Quantity', 'Cost Basis Per Share', 'Sell Pct', 'Sell/Buy Price']
+    with ThreadPool(threads) as p:
+        scraped_data = list(p.map(parse, df[cols].to_numpy().tolist()))
+    columns = list(scraped_data)[0]
+
+    # Organize into pandas df
+    df = organize_df(scraped_data, columns, list(df['Symbol']))
 
     return df
 

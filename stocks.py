@@ -1,20 +1,13 @@
 # Import packages
-from multiprocessing.pool import ThreadPool
 from datetime import datetime
 
 # Import parameters and utility functions
 from params import stocks, update, threads, margin
-from utils import parse, organize_df, send_email
+from utils import scrape_data, send_email
 
 
-# Parse the data
-cols = ['Symbol', 'Quantity', 'Cost Basis Per Share', 'Sell Pct', 'Sell/Buy Price']
-with ThreadPool(threads) as p:
-    scraped_data = list(p.map(parse, stocks[cols].to_numpy().tolist()))
-columns = list(scraped_data)[0]
-
-# Organize into pandas df
-df = organize_df(scraped_data, columns, list(stocks['Symbol']))
+# Scrape and parse the data
+df = scrape_data(stocks, threads)
 
 
 # Send summary in the morning (automatic runs scheduled for 9:45 and hourly after that)
