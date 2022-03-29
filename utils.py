@@ -131,6 +131,7 @@ def organize_df(scraped_data, columns, index):
 
 
 # Function to parse the data from Yahoo then organize into a df
+@st.cache
 def scrape_data(df, threads):
     cols = ['Symbol', 'Quantity', 'Cost Basis Per Share', 'Sell Pct', 'Sell/Buy Price']
     with ThreadPool(threads) as p:
@@ -209,7 +210,7 @@ def send_email(subject, df):
 # Function to get stock prices for given ticker in the past 100 days
 @st.cache
 def get_history(ticker):
-    url = "http://finance.yahoo.com/quote/%s/history" % ticker
+    url = f"http://finance.yahoo.com/quote/{ticker}/history"
     response = requests.get(url, headers=headers, timeout=30)
     parser = html.fromstring(response.text)
     table = parser.xpath('//table')  # javascript limits this to 100 entries

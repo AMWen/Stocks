@@ -2,3 +2,4 @@ pyyaml==6.0
 pandas==1.4.1
 streamlit==1.8.0
 lxml==4.8.0
+click == 8.0.4

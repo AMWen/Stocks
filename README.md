@@ -14,3 +14,8 @@ This could be combined with a job scheduler such as crontab to automatically sen
 
 ## Sample email output
 <img src="https://raw.githubusercontent.com/AMWen/Stocks/main/images/example.png" width="75%">
+
+
+## Streamlit app
+
+There is also a companion streamlit app for viewing the tables broken up into categories you specify (e.g., stocks you plan to keep as short-term vs. long-term investments). This can be accessed locally with `streamlit run stocks-sl.py`. It also gives a view of the stocks' performance over time. (It is normal for it to take several minutes to run the first time.)
