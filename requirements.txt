@@ -1,5 +1,7 @@
-pyyaml==6.0
+click==8.0.4
+lxml==4.9.1
 pandas==1.4.1
+pre-commit==3.0.4
+pyyaml==6.0
 streamlit==1.8.0
-lxml==4.8.0
-click == 8.0.4
+yfinance==0.2.9
