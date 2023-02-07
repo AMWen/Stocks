@@ -1,7 +1,10 @@
 click==8.0.4
 lxml==4.9.1
+matplotlib==3.6.3
+mplfinance==0.12.7a5
 pandas==1.4.1
 pre-commit==3.0.4
+protobuf==3.20.0
 pyyaml==6.0
 streamlit==1.8.0
 yfinance==0.2.9
