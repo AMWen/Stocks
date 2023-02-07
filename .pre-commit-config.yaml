@@ -36,7 +36,7 @@ repos:
   rev: 5.10.1
   hooks:
   - id: isort
-    args: ["--profile", "black", "--filter-files", "--line-length", "100"]
+    args: ["--profile", "black", "--filter-files", "--line-length", "120"]
 - repo: https://github.com/psf/black
   rev: 22.3.0  # https://github.com/psf/black/issues/2964#issuecomment-1080974737
   hooks:
@@ -44,14 +44,14 @@ repos:
     args:
       - "-S"
       - "--line-length"
-      - "100"
+      - "120"
 - repo: https://github.com/pycqa/flake8
   rev: 3.9.2
   hooks:
   - id: flake8
     args:
       # making compatible with black
-      - "--max-line-length=100"
+      - "--max-line-length=120"
       - "--extend-ignore=E203" # allow whitespace before ':'
 - repo: https://github.com/pre-commit/mirrors-mypy
   rev: v0.910
