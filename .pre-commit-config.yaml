@@ -15,7 +15,7 @@ repos:
   -  id: check-ast  # checks whether the files parse as valid python
   -  id: debug-statements
   -  id: file-contents-sorter
-     files: requirements.txt|bollinger_stocks.yml
+     files: requirements.txt
 - repo: https://github.com/asottile/pyupgrade
   rev: v2.32.1
   hooks:
