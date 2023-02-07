@@ -1,35 +1,43 @@
-AAPL
-AMC
-AMZN
-AXP
-BAC
-BIRD
-BYND
-CMCSA
-DIS
-DNA
-GME
-GOGO
-GOOG
-INTC
-JNJ
-LGVN
-MRNA
-MSFT
-NKE
-NVDA
-OXY
-PFE
-PLL
-PLTR
-RIVN
-ROKU
-SBUX
-SLB
-SNOW
-STRY
-TSLA
-VOO
-VRTX
-VTRS
-ZM
+# Stocks
+stocks: [
+  AAPL,
+  AMC,
+  AMZN,
+  AXP,
+  BAC,
+  BIRD,
+  BYND,
+  CMCSA,
+  DIS,
+  DNA,
+  HD,
+  GE,
+  GME,
+  GOGO,
+  GOOG,
+  INTC,
+  JNJ,
+  LGVN,
+  MRNA,
+  MSFT,
+  NKE,
+  NVDA,
+  OXY,
+  PFE,
+  PLL,
+  PLTR,
+  RIVN,
+  ROKU,
+  SBUX,
+  SLB,
+  SNOW,
+  STRY,
+  TSLA,
+  VOO,
+  VRTX,
+  VTRS,
+  ZM]
+
+# Window and number of std dev for Bollinger Bands
+window: 20
+num_stdev: 2
