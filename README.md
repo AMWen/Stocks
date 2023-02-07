@@ -7,9 +7,12 @@ To use, you will need to update stocks of interest and email account credentials
 
 You will also need to update `Portfolio_Positions.csv` with information for stocks you own and the desired profit % at which to sell.
 
-This could be combined with a job scheduler such as crontab to automatically send daily digests and alerts for when trigger prices are reached.
+This could be combined with a job scheduler such as crontab to automatically send daily digests and alerts for when trigger prices are reached. If on MacOS, you may need to [update some security and privacy settings](https://osxdaily.com/2020/04/27/fix-cron-permissions-macos-full-disk-access/) to be able to update cron jobs.
 
-**Example:** `45 9-15 * * 1-5 (cd /path/to/Stocks/folder/ && /anaconda3/bin/python stocks.py > /tmp/test.log)` to run the `stocks.py` code every hour between 9:45 am and 3:45 pm on weekdays.
+**Examples:**
+- `45 9-15 * * 1-5 (cd /path/to/Stocks/folder/ && /anaconda3/bin/python stocks.py > /tmp/test.log)` to run the `stocks.py` code every hour between 9:45 am and 3:45 pm on weekdays.
+- `45 9-15 * * 1-5 (cd /path/to/Stocks/folder/ && venv/bin/python bollinger_stocks.py > /tmp/test3.log)` to run the `bollinger_stocks.py` code every hour between 9:45 am and 3:45 pm on weekdays.
+    - `venv` virtual environment with the required packages is created using `make setup`
 
 
 ## Sample email output
