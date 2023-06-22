@@ -180,8 +180,10 @@ def get_bollinger_bands(stocks, window, num_stdev):
         {
             'Current Price': df_closing_prices[-1:].T[last_day],
             'Avg Price': SMA[-1:].T[last_day],
+            '# Std Dev': (df_closing_prices[-1:].T[last_day] - SMA[-1:].T[last_day]) / STDEV[-1:].T[last_day],
             'Two Std Dev': 2 * STDEV[-1:].T[last_day],
             'Std Dev Ratio': 2 * STDEV[-1:].T[last_day] / SMA[-1:].T[last_day],
+            '% Change': round((df_closing_prices.iloc[-1] / df_closing_prices.iloc[-2] - 1) * 100, 2).astype(str),
         },
         axis=1,
     )
@@ -200,14 +202,14 @@ def get_bollinger_bands(stocks, window, num_stdev):
 
     # Limit to stocks where the buy or sell recommendation count is > 0 and sort
     df_counts = df_counts.query('`Sell Count` > 0 or `Buy Count` > 0').sort_values(
-        ['Recommend Buy', 'Recommend Sell', 'Std Dev Ratio', 'Buy Count', 'Sell Count'],
+        ['Recommend Buy', 'Recommend Sell', '# Std Dev', 'Std Dev Ratio', 'Sell Count', 'Buy Count'],
         ascending=False,
     )
     stocks_to_sell = list(df_counts.query('`Recommend Sell` == True').index)
     stocks_to_buy = list(df_counts.query('`Recommend Buy` == True').index)
 
     # Force the formatting to be 2 decimal places (more digits get printed when rounding is used)
-    for col in ['Current Price', 'Avg Price', 'Two Std Dev']:
+    for col in ['Current Price', 'Avg Price', 'Two Std Dev', '# Std Dev']:
         df_counts[col] = df_counts[col].map('{:.2f}'.format)
 
     return df_counts, stocks_to_sell, stocks_to_buy
@@ -216,12 +218,15 @@ def get_bollinger_bands(stocks, window, num_stdev):
 # Function to set background red for negative values, white otherwise
 def color_negative_red(val):
     try:
+        val = float(val)  # convert strings
+
         if val < 0:
             color = 'tomato'
         elif val > 0:
             color = 'lightgreen'
         else:
             color = 'white'
+
     except Exception:
         color = 'white'
 
@@ -229,8 +234,8 @@ def color_negative_red(val):
 
 
 # Function to style the df
-def style_df(df, subset=['% Change Cost Basis', '% Change Previous Close'], bar=['Earnings']):
-    return df.style.applymap(color_negative_red, subset=subset).bar(
+def style_df(df, color=['% Change Cost Basis', '% Change Previous Close'], bar=['Earnings']):
+    return df.style.applymap(color_negative_red, subset=color).bar(
         subset=bar, align='zero', color=['tomato', 'lightblue']
     )
 
@@ -239,7 +244,7 @@ def style_df(df, subset=['% Change Cost Basis', '% Change Previous Close'], bar=
 def send_email(
     subject,
     df,
-    subset=['% Change Cost Basis', '% Change Previous Close'],
+    color=['% Change Cost Basis', '% Change Previous Close'],
     bar=['Earnings'],
     other_msg='',
 ):
@@ -272,7 +277,7 @@ def send_email(
         th {background-color: lightblue; color: black; text-align: center;}
         td {background-color: #fff; padding: 10px; text-align: center;}"""
 
-    styled = style_df(df, subset, bar).to_html()
+    styled = style_df(df, color, bar).to_html()
     styled = styled.replace('<style', f'<head>{other_msg}<style').replace('</style>', addl_style + '</style></head>\n')
 
     # Add df in the message body as html format

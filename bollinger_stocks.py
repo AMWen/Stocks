@@ -18,7 +18,7 @@ if len(df) > 0:
     send_email(
         'Bollinger Bands Info',
         df,
-        subset=['Recommend Buy', 'Recommend Sell'],
+        color=['Recommend Buy', 'Recommend Sell', '% Change'],
         bar=['Std Dev Ratio', 'Buy Count', 'Sell Count'],
         other_msg=f"<b>Stocks to buy:</b> {', '.join(stocks_to_buy)}<br>"
         + f"<b>Stocks to sell:</b> {', '.join(stocks_to_sell)}<br><br>",
