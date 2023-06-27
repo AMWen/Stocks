@@ -243,7 +243,7 @@ def style_df(df, color=['% Change Cost Basis', '% Change Previous Close'], bar=[
 # Function to send email containing df of interest and subject (whether daily update or a price alert)
 def send_email(
     subject,
-    df,
+    df_dict,
     color=['% Change Cost Basis', '% Change Previous Close'],
     bar=['Earnings'],
     other_msg='',
@@ -277,11 +277,17 @@ def send_email(
         th {background-color: lightblue; color: black; text-align: center;}
         td {background-color: #fff; padding: 10px; text-align: center;}"""
 
-    styled = style_df(df, color, bar).to_html()
-    styled = styled.replace('<style', f'<head>{other_msg}<style').replace('</style>', addl_style + '</style></head>\n')
+    html = ""
+    for df_segment in df_dict:
+        df = df_dict[df_segment]
+        styled = style_df(df, color, bar).to_html()
 
-    # Add df in the message body as html format
-    html = f"""<html>{styled}</html>"""
+        # Add df in the message body as html format
+        html += f"""<b>{df_segment}:</b> <br>{styled}<br>"""
+
+    html = f"""<html><head>{other_msg}</head>{html}</html>""".replace('<style', '<head><style').replace(
+        '</style>', addl_style + '</style></head>\n'
+    )
     msg.attach(MIMEText(html, 'html'))
 
     # Send the message

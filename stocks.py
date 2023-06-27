@@ -2,9 +2,8 @@
 from datetime import datetime
 
 # Import parameters and utility functions
-from params import stocks, update, threads, margin
+from params import margin, stocks, threads, update
 from utils import scrape_data, send_email
-
 
 # Scrape and parse the data
 df = scrape_data(stocks, threads)
@@ -23,11 +22,13 @@ if (now < '10:00') or (now > '15:00') or (update):  # send update before 10 am, 
 # 3) price is above desired sell price
 # 4) price is below desired buy price
 # Get all rows where this is true
-df_send = df[(df['% Change Previous Close'] < margin) |
-             (df['% Change Cost Basis'] < margin) |
-             ((df['Current Price'] > df['Sell/Buy Price']) & (df['Sell Pct'] > 0)) |
-             ((df['Current Price'] < df['Sell/Buy Price']) & (df['Sell Pct'] < 0)) ]
+df_send = df[
+    (df['% Change Previous Close'] < margin)
+    | (df['% Change Cost Basis'] < margin)
+    | ((df['Current Price'] > df['Sell/Buy Price']) & (df['Sell Pct'] > 0))
+    | ((df['Current Price'] < df['Sell/Buy Price']) & (df['Sell Pct'] < 0))
+]
 
 # If any rows are identified, send an email
 if len(df_send) > 0:
-    send_email('Price Alert', df_send)
+    send_email('Price Alert', {'all', df_send})
