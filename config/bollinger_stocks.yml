@@ -1,43 +1,54 @@
-# Stocks
-stocks: [
-  AAPL,
-  AMC,
-  AMZN,
-  AXP,
-  BAC,
-  BIRD,
-  BYND,
-  CMCSA,
-  DIS,
-  DNA,
-  HD,
-  GE,
-  GME,
-  GOGO,
-  GOOG,
-  INTC,
-  JNJ,
-  LGVN,
-  MRNA,
-  MSFT,
-  NKE,
-  NVDA,
-  OXY,
-  PFE,
-  PLL,
-  PLTR,
-  RIVN,
-  ROKU,
-  SBUX,
-  SLB,
-  SNOW,
-  STRY,
-  TSLA,
-  VOO,
-  VRTX,
-  VTRS,
-  ZM]
+# Short-term stocks
+short_term:
+  stocks: [
+    BIRD,
+    DNA,
+    STRYQ,
+  ]
+  # Window and number of std dev for Bollinger Bands
+  window: 10
+  num_stdev: 1.75
 
-# Window and number of std dev for Bollinger Bands
-window: 20
-num_stdev: 2
+# Long-term stocks
+long_term:
+  stocks: [
+    AAPL,
+    AMC,
+    AMZN,
+    AXP,
+    BAC,
+    BUD,
+    BYND,
+    CMCSA,
+    DIS,
+    DVN, # div
+    HD,
+    GE,
+    GME,
+    GOGO,
+    GOOG,
+    INTC,
+    JNJ,
+    LGVN,
+    MRNA,
+    MSFT,
+    NKE,
+    NVDA,
+    OXY,
+    PFE,
+    PLL,
+    PLTR,
+    RIVN,
+    ROKU,
+    SBUX,
+    SLB,
+    SNOW,
+    T, # div
+    TDOC,
+    TSLA,
+    VOO,
+    VRTX,
+    VTRS,
+    ZM]
+  window: 20
+  num_stdev: 2
