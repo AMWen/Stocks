@@ -165,7 +165,7 @@ def scrape_data(df, threads):
 # Function to parse data from Yahoo and create upper and lower bounds for Bollinger Bands
 def get_bollinger_bands(stocks, window, num_stdev):
     # Get stock information
-    df_stocks = yf.download(stocks, start="2023-01-01").reset_index()
+    df_stocks = yf.download(stocks, period="3mo").reset_index()
     df_closing_prices = df_stocks['Close'].reset_index(drop=True)
 
     # Calculate moving average and upper and lower bounds
